@@ -1,11 +1,8 @@
 package com.carloscastor.ordermanager.controller;
 
+import com.carloscastor.ordermanager.dto.ItemDTO;
 import com.carloscastor.ordermanager.dto.UserDTO;
 
-public interface UserController {
+public interface UserController extends GenericController<UserDTO, Integer>{
 
-    void createUser(UserDTO user);
-    UserDTO retrieveUser(Integer userId);
-    void updateUser(Integer userId, UserDTO user);
-    void deleteUser(Integer userId);
 }

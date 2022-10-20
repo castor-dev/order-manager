@@ -2,10 +2,7 @@ package com.carloscastor.ordermanager.controller;
 
 import com.carloscastor.ordermanager.dto.ItemDTO;
 
-public interface ItemController {
+public interface ItemController extends GenericController<ItemDTO, Integer>{
 
-    void createItem(ItemDTO item);
-    ItemDTO retrieveItem(Integer itemId);
-    void updateItem(Integer itemId, ItemDTO item);
-    void deleteItem(Integer itemId);
+
 }
