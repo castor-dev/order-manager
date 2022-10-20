@@ -1,5 +1,7 @@
 package com.carloscastor.ordermanager.entity;
 
+import com.carloscastor.ordermanager.common.OrderStatus;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -24,6 +26,9 @@ public class OrderEntity {
 
     @Column
     private LocalDateTime creationDate;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     public OrderEntity() {
     }
