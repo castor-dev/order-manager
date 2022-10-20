@@ -5,7 +5,7 @@ info:
   title: order-manager-api
   version: '1.0'
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://localhost:8085'
 paths:
   '/users/{user_id}':
     parameters:
