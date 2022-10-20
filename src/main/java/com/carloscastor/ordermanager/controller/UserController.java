@@ -1,15 +1,11 @@
 package com.carloscastor.ordermanager.controller;
 
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.carloscastor.ordermanager.dto.UserDTO;
 
-@RestController("/users")
-public class UserController {
+public interface UserController {
 
-    @GetMapping("/")
-    public String helloUser(@Param("name") String name){
-        return Strings.isBlank(name) ? "Hello User" : "Hello " + name;
-    }
+    void createUser(UserDTO user);
+    UserDTO retrieveUser(Integer userId);
+    void updateUser(Integer userId, UserDTO user);
+    void deleteUser(Integer userId);
 }
