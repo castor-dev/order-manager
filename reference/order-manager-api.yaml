@@ -5,8 +5,40 @@ info:
   title: order-manager-api
   version: '1.0'
 servers:
-  - url: 'http://localhost:8085'
+  - url: 'http://localhost:3000'
 paths:
+  /users:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                New User Bob Fellow:
+                  value:
+                    id: 12
+                    firstName: Bob
+                    lastName: Fellow
+                    email: bob.fellow@gmail.com
+                    dateOfBirth: '1996-08-24'
+                    emailVerified: false
+                    createDate: '2020-11-18'
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+      description: Create a new user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+    parameters: []
   '/users/{user_id}':
     parameters:
       - schema:
@@ -42,8 +74,13 @@ paths:
       summary: Update User
       operationId: put-users-user_id
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
         '404':
           description: User Not Found
       description: 'Update User '
@@ -61,75 +98,222 @@ paths:
         '404':
           description: UserNot Found
       description: Delete User
-  /user:
+  /items:
     post:
-      summary: Create New User
-      operationId: post-user
+      summary: Create Item
+      operationId: post-item
+      responses:
+        '201':
+          description: Created
+      description: Create Item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+    parameters: []
+  '/items/{item_id}':
+    parameters:
+      - schema:
+          type: string
+        name: item_id
+        in: path
+        required: true
+    get:
+      summary: Delete item
+      tags: []
       responses:
         '200':
-          description: User Created
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
-        '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
+                $ref: '#/components/schemas/Item'
+      operationId: get-items-item_id
+      description: Get item by id
+    put:
+      summary: Update Item
+      operationId: put-items-item_id
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+          application/xml:
+            schema:
+              type: object
+              properties:
+                item:
+                  $ref: '#/components/schemas/Item'
+    delete:
+      summary: Delete Item
+      operationId: delete-items-item_id
+      responses:
+        '200':
+          description: OK
+      description: Delete Item
+  /stock-movements/:
+    post:
+      summary: Create Stock Movement
+      operationId: post-stock-movement
+      responses:
+        '200':
+          description: OK
+      description: Add Items to the Stock
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-              required:
-                - firstName
-                - lastName
-                - email
-                - dateOfBirth
-            examples:
-              Create User Bob Fellow:
-                value:
-                  firstName: Bob
-                  lastName: Fellow
-                  email: bob.fellow@gmail.com
-                  dateOfBirth: '1996-08-24'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
-  /stock/movement:
+                stock_movement:
+                  $ref: '#/components/schemas/StockMovement'
+    parameters: []
+  '/stock-movements/{stock_movement_id}':
+    parameters:
+      - schema:
+          type: string
+        name: stock_movement_id
+        in: path
+        required: true
     get:
-      summary: Create Stock Movement
+      summary: Get Stock Movement
       tags: []
-      responses: {}
-      operationId: get-stock-movement
-      description: ''
-    post:
-      summary: ''
-      operationId: post-stock-movement
       responses:
         '200':
           description: OK
-      description: Add Items to the Stock
-    parameters: []
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stock_movement:
+                    $ref: '#/components/schemas/StockMovement'
+      operationId: get-stock-movement-stock_movement_id
+    put:
+      summary: Update Stock Movement
+      operationId: put-stock-movement-stock_movement_id
+      responses:
+        '200':
+          description: OK
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock_movement:
+                  $ref: '#/components/schemas/StockMovement'
+    delete:
+      summary: Delete Stock Movement
+      operationId: delete-stock-movement-stock_movement_id
+      responses:
+        '200':
+          description: OK
+  '/stock-movements/{stock_movement_id}/orders':
+    parameters:
+      - schema:
+          type: string
+        name: stock_movement_id
+        in: path
+        required: true
+    get:
+      summary: Get Stock Movement Orders
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockMovementOrders'
+      operationId: get-stock-movement-stock_movement_id
+  /orders:
+    post:
+      summary: Create Order
+      operationId: post-orders
+      responses:
+        '201':
+          description: Created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  $ref: '#/components/schemas/Order'
+  '/orders/{order_id}':
+    parameters:
+      - schema:
+          type: string
+        name: order_id
+        in: path
+        required: true
+    get:
+      summary: Update Order
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
+      operationId: get-orders-order_id
+    put:
+      summary: Update Order
+      operationId: put-orders-order_id
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  $ref: '#/components/schemas/Order'
+    delete:
+      summary: Delete Order
+      operationId: delete-orders-order_id
+      responses:
+        '200':
+          description: OK
+  '/orders/{order_id}/stock-movement':
+    parameters:
+      - schema:
+          type: string
+        name: order_id
+        in: path
+        required: true
+    get:
+      summary: Get Order Stock Movements
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
+        '':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStockMovemets'
+      operationId: get-orders-order_id
 components:
   schemas:
     User:
@@ -147,7 +331,7 @@ components:
           signUpDate: '2019-08-24'
       properties:
         id:
-          type: string
+          type: integer
           description: Unique identifier for the given user.
           format: uuid
         name:
@@ -160,21 +344,6 @@ components:
         - id
         - name
         - email
-    ItemQuantity:
-      title: ItemQuantity
-      x-stoplight:
-        id: bfbujt9kwkj0d
-      type: object
-      properties:
-        item_id:
-          type: string
-          format: uuid
-        item_quantity:
-          type: integer
-          minimum: 1
-      required:
-        - item_id
-        - item_quantity
     Order:
       title: Order
       x-stoplight:
@@ -182,11 +351,9 @@ components:
       type: object
       properties:
         id:
-          type: string
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ItemQuantity'
+          type: integer
+        item:
+          $ref: '#/components/schemas/ItemQuantity'
         status:
           type: string
           enum:
@@ -198,6 +365,21 @@ components:
         creation_date:
           type: string
           format: date
+    ItemQuantity:
+      title: ItemQuantity
+      x-stoplight:
+        id: bfbujt9kwkj0d
+      type: object
+      properties:
+        item_id:
+          type: integer
+          format: uuid
+        item_quantity:
+          type: integer
+          minimum: 1
+      required:
+        - item_id
+        - item_quantity
     StockMovement:
       title: StockMovement
       x-stoplight:
@@ -205,17 +387,15 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
           format: uuid
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ItemQuantity'
+        item:
+          $ref: '#/components/schemas/ItemQuantity'
         creation_date:
           type: string
           format: date
       required:
-        - items
+        - item
     OrderStockMovemets:
       title: OrderStockMovemets
       x-stoplight:
@@ -223,7 +403,7 @@ components:
       type: object
       properties:
         order_id:
-          type: string
+          type: integer
         stock_movements:
           type: array
           items:
@@ -235,11 +415,23 @@ components:
       type: object
       properties:
         stock_movement_id:
-          type: string
+          type: integer
         orders:
           type: array
           items:
             $ref: '#/components/schemas/Order'
+    Item:
+      title: Item
+      x-stoplight:
+        id: rodz3juawhdwx
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - name
   requestBodies: {}
   parameters:
     user_id:
