@@ -1,24 +1,20 @@
-  version: '3.3'
+  version: '3.1'
 
   services:
     app:
       depends_on:
-        - postgres
+        - database
       build: .
-      restart: always
       ports:
         - 8085:8085
 
-    postgres:
-      image: postgres:10.5
+    database:
+      image: postgres
       restart: always
       environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-      logging:
-        options:
-          max-size: 10m
-          max-file: "3"
+        - POSTGRES_USER=username
+        - POSTGRES_PASSWORD=password
+        - POSTGRES_DB=order-manager
       ports:
         - '5432:5432'
       volumes:

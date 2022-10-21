@@ -2,10 +2,18 @@ package com.carloscastor.ordermanager.controller;
 
 import com.carloscastor.ordermanager.dto.OrderDTO;
 
-public interface OrderController {
+public class OrderController {
 
-    void createOrder(OrderDTO Order);
-    OrderDTO retrieveOrder(Integer OrderId);
-    void updateOrder(Integer OrderId, OrderDTO Order);
-    void deleteOrder(Integer OrderId);
+    public void createOrder(OrderDTO Order){
+
+    }
+    public OrderDTO retrieveOrder(Integer OrderId){
+        return null;
+    }
+    public void updateOrder(Integer OrderId, OrderDTO Order){
+
+    }
+    public void deleteOrder(Integer OrderId){
+
+    }
 }

@@ -1,4 +1,11 @@
-server:
-  port: 8085
-
-javax:
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/order-manager
+    username: username
+    password: password
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
