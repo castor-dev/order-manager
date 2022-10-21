@@ -2,26 +2,18 @@ package com.carloscastor.ordermanager.dto;
 
 import javax.validation.constraints.NotEmpty;
 
-public class ItemDTO {
+public class ItemDTO extends BaseDTO{
 
-    private Integer id;
     @NotEmpty
     private String name;
 
     public ItemDTO() {
+        super();
     }
 
     public ItemDTO(Integer id, String name) {
-        this.id = id;
+        super(id);
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {

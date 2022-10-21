@@ -1,33 +1,38 @@
 package com.carloscastor.ordermanager.controller;
 
 import com.carloscastor.ordermanager.dto.UserDTO;
+import com.carloscastor.ordermanager.service.EmailService;
 import com.carloscastor.ordermanager.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
 public class UserController {
 
     private UserService userService;
+    private EmailService emailService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @PostMapping
-    public void createUser(@RequestBody UserDTO user){
-        userService.create(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO createUser(@RequestBody UserDTO user){
+        return userService.create(user);
     }
-    public UserDTO retrieveUser(Integer userId){
-        return null;
+    @GetMapping("/{user-id}")
+    public UserDTO retrieveUser(@PathVariable("user-id") Integer userId){
+        return userService.findByID(userId);
     }
-    public void updateUser(Integer userId, UserDTO user){
-
+    @PutMapping("/{user-id}")
+    public UserDTO updateUser(@PathVariable("user-id") Integer userId, @RequestBody UserDTO user){
+        return userService.update(userId,user);
     }
-    public void deleteUser(Integer userId){
-
+    @DeleteMapping("/{user-id}")
+    public void deleteUser(@PathVariable("user-id") Integer userId){
+        userService.delete(userId);
     }
 }

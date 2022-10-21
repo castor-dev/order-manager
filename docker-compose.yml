@@ -4,12 +4,15 @@
     app:
       depends_on:
         - database
+        - mailhog
       build: .
+      container_name: 'order_manager'
       ports:
-        - 8085:8085
+        - '8085:8080'
 
     database:
       image: postgres
+      container_name: 'order_manager_database'
       restart: always
       environment:
         - POSTGRES_USER=username
@@ -19,3 +22,10 @@
         - '5432:5432'
       volumes:
         - ./postgres-data:/var/lib/postgresql/data
+
+    mailhog:
+      image: mailhog/mailhog
+      container_name: 'mail_service'
+      ports:
+        - '1025:1025'
+        - '8025:8025'

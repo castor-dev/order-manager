@@ -5,11 +5,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "app_user")
-public class UserEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+public class UserEntity extends BaseEntity {
 
     @Column
     private String name;
@@ -24,17 +20,9 @@ public class UserEntity {
     }
 
     public UserEntity(Integer id, String name, String email) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.email = email;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {

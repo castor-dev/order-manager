@@ -5,11 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stock_movement")
-public class StockMovementEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+public class StockMovementEntity extends BaseEntity {
 
     @Column
     private LocalDateTime creationDate;
@@ -25,18 +21,10 @@ public class StockMovementEntity {
     }
 
     public StockMovementEntity(Integer id, LocalDateTime creationDate, ItemEntity stockMovementItem, Integer stockMovementItemQuantity) {
-        this.id = id;
+        super(id);
         this.creationDate = creationDate;
         this.stockMovementItem = stockMovementItem;
         this.stockMovementItemQuantity = stockMovementItemQuantity;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreationDate() {

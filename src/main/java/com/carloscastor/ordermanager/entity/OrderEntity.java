@@ -7,11 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "app_order")
-public class OrderEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+public class OrderEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -34,19 +30,11 @@ public class OrderEntity {
     }
 
     public OrderEntity(Integer id, UserEntity createdBy, ItemEntity orderItem, Integer orderItemQuantity, LocalDateTime creationDate) {
-        this.id = id;
+        super(id);
         this.createdBy = createdBy;
         this.orderItem = orderItem;
         this.orderItemQuantity = orderItemQuantity;
         this.creationDate = creationDate;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public UserEntity getCreatedBy() {
@@ -79,5 +67,13 @@ public class OrderEntity {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

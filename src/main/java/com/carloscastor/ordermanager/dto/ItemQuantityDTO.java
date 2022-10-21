@@ -9,7 +9,7 @@ public class ItemQuantityDTO {
     private Integer itemId;
     @NotNull
     @Min(1)
-    private Integer itemQuantity;
+    private Integer quantity;
 
 
     public ItemQuantityDTO() {
@@ -17,7 +17,7 @@ public class ItemQuantityDTO {
 
     public ItemQuantityDTO(Integer itemId, Integer itemQuantity) {
         this.itemId = itemId;
-        this.itemQuantity = itemQuantity;
+        this.quantity = itemQuantity;
     }
 
     public Integer getItemId() {
@@ -28,11 +28,11 @@ public class ItemQuantityDTO {
         this.itemId = itemId;
     }
 
-    public Integer getItemQuantity() {
-        return itemQuantity;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setItemQuantity(Integer itemQuantity) {
-        this.itemQuantity = itemQuantity;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

@@ -1,19 +1,38 @@
 package com.carloscastor.ordermanager.controller;
 
 import com.carloscastor.ordermanager.dto.StockMovementDTO;
+import com.carloscastor.ordermanager.service.StockMovementService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/stock-movement")
 public class StockMovementController {
 
-    public void createStockMovement(StockMovementDTO StockMovement){
+    private StockMovementService stockMovementService;
 
+    public StockMovementController(StockMovementService stockMovementService) {
+        this.stockMovementService = stockMovementService;
     }
-    public StockMovementDTO retrieveStockMovement(Integer StockMovementId){
-        return null;
-    }
-    public void updateStockMovement(Integer StockMovementId, StockMovementDTO StockMovement){
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public StockMovementDTO createStockMovement(@RequestBody StockMovementDTO stockMovementDTO) {
+        return stockMovementService.create(stockMovementDTO);
     }
-    public void deleteStockMovement(Integer StockMovementId){
 
+    @GetMapping("/{stock-movement-id}")
+    public StockMovementDTO retrieveStockMovement(@PathVariable("stock-movement-id") Integer stockMovementId) {
+        return stockMovementService.findByID(stockMovementId);
+    }
+
+    @PutMapping("/{stock-movement-id}")
+    public StockMovementDTO updateStockMovement(@PathVariable("stock-movement-id") Integer stockMovementId, @RequestBody StockMovementDTO stockMovementDTO) {
+        return stockMovementService.update(stockMovementId, stockMovementDTO);
+    }
+
+    @DeleteMapping("/{stock-movement-id}")
+    public void deleteStockMovement(@PathVariable("stock-movement-id") Integer stockMovementId) {
+        stockMovementService.delete(stockMovementId);
     }
 }

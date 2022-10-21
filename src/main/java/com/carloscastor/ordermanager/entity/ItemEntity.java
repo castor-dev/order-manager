@@ -5,11 +5,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "item")
-public class ItemEntity {
+public class ItemEntity extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
 
     @Column(nullable = false)
     private String name;
@@ -24,16 +21,8 @@ public class ItemEntity {
     }
 
     public ItemEntity(Integer id, String name) {
-        this.id = id;
+        super(id);
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -4,8 +4,8 @@ import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotEmpty;
 
-public class UserDTO {
-    private Integer id;
+public class UserDTO extends BaseDTO {
+
     @NotEmpty
     private String name;
     @NotEmpty
@@ -15,17 +15,9 @@ public class UserDTO {
     }
 
     public UserDTO(Integer id, String name, String email) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.email = email;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -43,4 +35,5 @@ public class UserDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }

@@ -4,36 +4,28 @@ import com.carloscastor.ordermanager.common.OrderStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 
-public class OrderDTO {
+public class OrderDTO extends BaseDTO {
 
-    private Integer id;
     @NotNull
     private ItemQuantityDTO itemQuantity;
     private OrderStatus status;
     @NotNull
     private Integer createdBy;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(Integer id, ItemQuantityDTO itemQuantity, OrderStatus status, Integer createdBy, Date creationDate) {
-        this.id = id;
+    public OrderDTO(Integer id, ItemQuantityDTO itemQuantity, OrderStatus status, Integer createdBy, LocalDateTime creationDate) {
+        super(id);
         this.itemQuantity = itemQuantity;
         this.status = status;
         this.createdBy = createdBy;
         this.creationDate = creationDate;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public ItemQuantityDTO getItemQuantity() {
@@ -60,11 +52,11 @@ public class OrderDTO {
         this.createdBy = createdBy;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 }

@@ -9,3 +9,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create
+  mail:
+    host: localhost
+    port: 1025
+    username: ''
+    password: ''
