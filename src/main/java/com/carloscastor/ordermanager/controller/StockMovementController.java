@@ -1,18 +1,25 @@
 package com.carloscastor.ordermanager.controller;
 
+import com.carloscastor.ordermanager.dto.OrderStockMovementDTO;
 import com.carloscastor.ordermanager.dto.StockMovementDTO;
+import com.carloscastor.ordermanager.service.OrderStockReportService;
 import com.carloscastor.ordermanager.service.StockMovementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/stock-movements")
 public class StockMovementController {
 
     private StockMovementService stockMovementService;
+    private OrderStockReportService orderStockReportService;
 
-    public StockMovementController(StockMovementService stockMovementService) {
+
+    public StockMovementController(StockMovementService stockMovementService, OrderStockReportService orderStockReportService) {
         this.stockMovementService = stockMovementService;
+        this.orderStockReportService = orderStockReportService;
     }
 
     @PostMapping
@@ -25,7 +32,10 @@ public class StockMovementController {
     public StockMovementDTO retrieveStockMovement(@PathVariable("stock-movement-id") Integer stockMovementId) {
         return stockMovementService.findByID(stockMovementId);
     }
-
+    @GetMapping("/{stock-movement-id}/orders")
+    public List<OrderStockMovementDTO> retrieveOrderStockMovementsReport(@PathVariable("stock-movement-id") Integer stockMovementId) {
+        return orderStockReportService.findBySockMovementId(stockMovementId);
+    }
     @PutMapping("/{stock-movement-id}")
     public StockMovementDTO updateStockMovement(@PathVariable("stock-movement-id") Integer stockMovementId, @RequestBody StockMovementDTO stockMovementDTO) {
         return stockMovementService.update(stockMovementId, stockMovementDTO);

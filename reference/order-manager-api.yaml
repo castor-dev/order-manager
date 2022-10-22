@@ -13,7 +13,7 @@ paths:
       summary: Create New User
       operationId: post-user
       responses:
-        '200':
+        '201':
           description: User Created
           content:
             application/json:
@@ -30,10 +30,8 @@ paths:
                     emailVerified: false
                     createDate: '2020-11-18'
         '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      description: Create a new user.
+          description: Email alredy taken
+      description: Create a new user. The user email must be unique.
       requestBody:
         content:
           application/json:
@@ -55,7 +53,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
-      description: ''
+      description: Returns a list with all available users.
   '/users/{user_id}':
     parameters:
       - schema:
@@ -84,7 +82,7 @@ paths:
                     emailVerified: true
                     signUpDate: '2019-08-24'
         '404':
-          description: User Not Found
+          description: Not Found
       operationId: get-users-userId
       description: Retrieve the information of the user with the matching user ID.
     put:
@@ -96,8 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                $ref: '#/components/schemas/User'
         '404':
           description: User Not Found
       description: 'Update User '
@@ -113,7 +110,7 @@ paths:
         '200':
           description: OK
         '404':
-          description: UserNot Found
+          description: Not Found
       description: Delete User
   /items:
     post:
@@ -122,6 +119,10 @@ paths:
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
       description: Create Item
       requestBody:
         content:
@@ -144,6 +145,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Item'
+      description: Returns a list with all available items.
   '/items/{item_id}':
     parameters:
       - schema:
@@ -169,6 +171,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
       requestBody:
         content:
           application/json:
@@ -262,7 +268,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StockMovementOrders'
+                $ref: '#/components/schemas/OrderStockMovemets'
       operationId: get-stock-movement-stock_movement_id
       description: Get Orders the consumed the Stock Movement
   /orders:
@@ -375,6 +381,7 @@ components:
           type: integer
           description: Unique identifier for the given user.
           minimum: 1
+          example: 1
         name:
           type: string
         email:
@@ -439,7 +446,7 @@ components:
       required:
         - item
     OrderStockMovemets:
-      title: OrderStockMovemets
+      title: OrderStockMovements
       x-stoplight:
         id: 8dfz36i1hnpvk
       type: object
@@ -447,23 +454,10 @@ components:
         orderId:
           type: integer
           minimum: 1
-        stockMovements:
-          type: array
-          items:
-            $ref: '#/components/schemas/StockMovementQuantity'
-    StockMovementOrders:
-      title: StockMovementOrders
-      x-stoplight:
-        id: qf7xf5smtqwib
-      type: object
-      properties:
         stockMovementId:
           type: integer
-          minimum: 1
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderQuantity'
+        stockConsumedQuantity:
+          type: integer
     Item:
       title: Item
       x-stoplight:

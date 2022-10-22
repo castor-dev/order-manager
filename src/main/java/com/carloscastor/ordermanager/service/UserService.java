@@ -5,10 +5,14 @@ import com.carloscastor.ordermanager.entity.UserEntity;
 import com.carloscastor.ordermanager.exception.OMInvalidOperationException;
 import com.carloscastor.ordermanager.mapper.Mapper;
 import com.carloscastor.ordermanager.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService extends AbstractCRUDService<UserEntity, UserDTO, Integer, UserRepository> {
+    private static Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
     public UserService(UserRepository userRepository, Mapper<UserDTO, UserEntity> mapper) {
         super(userRepository, mapper);
     }
@@ -16,7 +20,8 @@ public class UserService extends AbstractCRUDService<UserEntity, UserDTO, Intege
     @Override
     public UserDTO create(UserDTO dto) {
         getRepository().findByEmail(dto.getEmail()).ifPresent(u -> {
-            throw new OMInvalidOperationException(String.format("Email %s already used. Please, select another one", u.getEmail()));
+            LOGGER.error("Email already taken");
+            throw new OMInvalidOperationException(("Email already taken"));
         });
         return super.create(dto);
     }
