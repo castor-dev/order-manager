@@ -46,7 +46,7 @@ paths:
   '/users/{user_id}':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: user_id
         in: path
         required: true
@@ -60,16 +60,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-              examples:
-                Get User Alice Smith:
-                  value:
-                    id: 142
-                    firstName: Alice
-                    lastName: Smith
-                    email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
         '404':
           description: Not Found
       operationId: get-users-userId
@@ -139,7 +129,7 @@ paths:
   '/items/{item_id}':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: item_id
         in: path
         required: true
@@ -203,11 +193,17 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockMovement'
       description: Retrieve all available stock movements
   '/stock-movements/{stock_movement_id}':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: stock_movement_id
         in: path
         required: true
@@ -243,7 +239,7 @@ paths:
   '/stock-movements/{stock_movement_id}/orders':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: stock_movement_id
         in: path
         required: true
@@ -291,7 +287,7 @@ paths:
   '/orders/{order_id}':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: order_id
         in: path
         required: true
@@ -329,10 +325,10 @@ paths:
       responses:
         '200':
           description: OK
-  '/orders/{order_id}/stock-movement':
+  '/orders/{order_id}/stock-movements':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: order_id
         in: path
         required: true
@@ -380,7 +376,7 @@ components:
         id:
           type: integer
           minimum: 1
-        item:
+        itemQuantity:
           $ref: '#/components/schemas/ItemQuantity'
         status:
           type: string
@@ -417,13 +413,13 @@ components:
         id:
           type: integer
           minimum: 1
-        item:
+        itemQuantity:
           $ref: '#/components/schemas/ItemQuantity'
         creationDate:
           type: string
           format: date-time
       required:
-        - item
+        - itemQuantity
     OrderStockMovemets:
       title: OrderStockMovements
       x-stoplight:
