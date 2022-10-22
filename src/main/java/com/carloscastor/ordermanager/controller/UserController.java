@@ -6,6 +6,8 @@ import com.carloscastor.ordermanager.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("users")
 public class UserController {
@@ -22,6 +24,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO createUser(@RequestBody UserDTO user){
         return userService.create(user);
+    }
+
+    @GetMapping
+    public List<UserDTO> retrieveAllUsers(){
+        return userService.findAll();
     }
     @GetMapping("/{user-id}")
     public UserDTO retrieveUser(@PathVariable("user-id") Integer userId){

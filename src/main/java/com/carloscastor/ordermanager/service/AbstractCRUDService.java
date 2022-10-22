@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends BaseDTO, ID, REPO extends JpaRepository<ENT, ID>> {
@@ -40,6 +42,11 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
     public DTO findByID(ID id) {
         ENT entity = getEntity(id);
         return mapper.fromEntityToDTO(entity);
+    }
+
+    public List<DTO> findAll(){
+        List<ENT> all = repository.findAll();
+        return all.stream().map(e -> getMapper().fromEntityToDTO(e)).collect(Collectors.toList());
     }
 
 

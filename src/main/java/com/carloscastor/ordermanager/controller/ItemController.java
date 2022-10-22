@@ -5,6 +5,8 @@ import com.carloscastor.ordermanager.service.ItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("items")
 public class ItemController {
@@ -19,6 +21,11 @@ public class ItemController {
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDTO createItem(@RequestBody ItemDTO itemDTO){
         return itemService.create(itemDTO);
+    }
+
+    @GetMapping
+    public List<ItemDTO> retrieveAllItems(){
+        return itemService.findAll();
     }
     @GetMapping("/item-id")
     public ItemDTO retrieveItem(@PathVariable("item-id") Integer itemId){

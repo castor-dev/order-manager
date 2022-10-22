@@ -374,7 +374,7 @@ components:
         id:
           type: integer
           description: Unique identifier for the given user.
-          format: uuid
+          minimum: 1
         name:
           type: string
         email:
@@ -393,6 +393,7 @@ components:
       properties:
         id:
           type: integer
+          minimum: 1
         item:
           $ref: '#/components/schemas/ItemQuantity'
         status:
@@ -414,7 +415,7 @@ components:
       properties:
         itemId:
           type: integer
-          format: uuid
+          minimum: 1
         itemQuantity:
           type: integer
           minimum: 1
@@ -429,7 +430,7 @@ components:
       properties:
         id:
           type: integer
-          format: uuid
+          minimum: 1
         item:
           $ref: '#/components/schemas/ItemQuantity'
         creationDate:
@@ -445,6 +446,7 @@ components:
       properties:
         orderId:
           type: integer
+          minimum: 1
         stockMovements:
           type: array
           items:
@@ -457,6 +459,7 @@ components:
       properties:
         stockMovementId:
           type: integer
+          minimum: 1
         orders:
           type: array
           items:
@@ -469,6 +472,7 @@ components:
       properties:
         id:
           type: integer
+          minimum: 1
         name:
           type: string
       required:
@@ -483,6 +487,7 @@ components:
           $ref: '#/components/schemas/Order'
         quantity:
           type: integer
+          minimum: 1
     StockMovementQuantity:
       title: StockMovementQuantity
       x-stoplight:
@@ -493,6 +498,7 @@ components:
           $ref: '#/components/schemas/StockMovement'
         quantity:
           type: integer
+          minimum: 1
   requestBodies: {}
   parameters:
     user_id:
