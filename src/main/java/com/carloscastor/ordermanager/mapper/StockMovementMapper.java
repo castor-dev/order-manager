@@ -21,12 +21,14 @@ public class StockMovementMapper implements Mapper<StockMovementDTO, StockMoveme
     public StockMovementDTO fromEntityToDTO(StockMovementEntity entity) {
         StockMovementDTO dto = new StockMovementDTO();
         dto.setId(entity.getId());
+        dto.setCreationDate(entity.getCreationDate());
         ItemEntity stockMovementItem = entity.getStockMovementItem();
         ItemEntity itemEntity = itemRepository.findById(stockMovementItem.getId()).orElseThrow(() -> new OMNotFoundException("Item not found"));
         ItemQuantityDTO itemQuantityDTO = new ItemQuantityDTO();
         itemQuantityDTO.setItemId(itemEntity.getId());
         itemQuantityDTO.setQuantity(entity.getStockMovementItemQuantity());
-        entity.setCreationDate(entity.getCreationDate());
+        dto.setItemQuantity(itemQuantityDTO);
+
         return dto;
     }
 

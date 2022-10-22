@@ -17,6 +17,14 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
         this.mapper = mapper;
     }
 
+    public REPO getRepository() {
+        return repository;
+    }
+
+    public Mapper<DTO, ENT> getMapper() {
+        return mapper;
+    }
+
     public DTO create(DTO dto) {
         ENT entity = mapper.fromDTOToEntity(dto);
         ENT savedEntity = repository.save(entity);

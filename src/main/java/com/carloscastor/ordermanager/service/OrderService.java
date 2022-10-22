@@ -1,15 +1,111 @@
 package com.carloscastor.ordermanager.service;
 
+import com.carloscastor.ordermanager.common.OrderStatus;
+import com.carloscastor.ordermanager.dto.ItemQuantityDTO;
 import com.carloscastor.ordermanager.dto.OrderDTO;
+import com.carloscastor.ordermanager.dto.StockMovementDTO;
 import com.carloscastor.ordermanager.entity.OrderEntity;
+import com.carloscastor.ordermanager.entity.StockMovementEntity;
+import com.carloscastor.ordermanager.entity.UserEntity;
 import com.carloscastor.ordermanager.mapper.Mapper;
 import com.carloscastor.ordermanager.repository.OrderRepository;
+import com.carloscastor.ordermanager.repository.StockMovementRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService extends AbstractCRUDService<OrderEntity, OrderDTO, Integer, OrderRepository> {
 
-    public OrderService(OrderRepository orderRepository, Mapper<OrderDTO, OrderEntity> mapper) {
+    private EmailService emailService;
+    private StockMovementRepository stockMovementRepository;
+    private UserService userService;
+
+    public OrderService(OrderRepository orderRepository, Mapper<OrderDTO, OrderEntity> mapper, EmailService emailService, StockMovementRepository stockMovementRepository, UserService userService) {
         super(orderRepository, mapper);
+        this.emailService = emailService;
+        this.stockMovementRepository = stockMovementRepository;
+        this.userService = userService;
+    }
+
+    @Override
+    public OrderDTO create(OrderDTO dto) {
+        dto.setStatus(OrderStatus.PENDING);
+        dto.setCreationDate(LocalDateTime.now());
+        OrderDTO orderDTO = super.create(dto);
+        return processOrder(orderDTO);
+    }
+
+    public OrderDTO processOrder(OrderDTO orderDTO){
+        List<StockMovementEntity> availableStock = findAvailableStock(orderDTO.getItemQuantity());
+        if(!CollectionUtils.isEmpty(availableStock)){
+            Integer remainingOrderQuantity = orderDTO.getItemQuantity().getQuantity();
+            for (StockMovementEntity stockMovement : availableStock) {
+                Integer stockItemQuantity = stockMovement.getStockMovementItemQuantity();
+                int diff = stockItemQuantity - remainingOrderQuantity;
+                if(diff < 0){
+                    stockMovement.setStockMovementItemQuantity(0);
+                    remainingOrderQuantity = -1*diff;
+                    stockMovementRepository.save(stockMovement);
+                }else{
+                    stockMovement.setStockMovementItemQuantity(diff);
+                    stockMovementRepository.save(stockMovement);
+                    break;
+                }
+            }
+            orderDTO.setStatus(OrderStatus.COMPLETED);
+            OrderEntity orderEntity = getRepository().save(getMapper().fromDTOToEntity(orderDTO));
+            sendOrderCompletionEmail(orderEntity);
+            orderDTO = getMapper().fromEntityToDTO(orderEntity);
+        }
+
+        return orderDTO;
+    }
+
+    public void processPendingOrders() {
+        List<OrderEntity> pendingOrders = getRepository().findOrderByStatus(OrderStatus.PENDING);
+
+        OrderStatus status;
+        for (OrderEntity order : pendingOrders){
+            OrderDTO pendingOrder = getMapper().fromEntityToDTO(order);
+            OrderDTO orderDTO = processOrder(pendingOrder);
+            status = orderDTO.getStatus();
+            if(OrderStatus.PENDING.equals(status)){
+                break;
+            }
+        }
+    }
+
+
+    public List<StockMovementEntity> findAvailableStock(ItemQuantityDTO itemQuantity) {
+        List<StockMovementEntity> stockItems = Collections.emptyList();
+        Integer availableItemsCount = stockMovementRepository.getAvailableStock(itemQuantity.getItemId());
+        if (itemQuantity.getQuantity() <= availableItemsCount) {
+            stockItems =stockMovementRepository.findBAvailableStock(itemQuantity.getItemId());
+        }
+        return stockItems;
+    }
+
+    private void sendOrderCompletionEmail(OrderEntity order){
+
+        UserEntity createdBy = order.getCreatedBy();
+        String email = createdBy.getEmail();
+        String name = createdBy.getName();
+        StringBuffer subjectStringBuffer = new StringBuffer();;
+        subjectStringBuffer.append("Order ");
+        subjectStringBuffer.append(order.getId());
+        subjectStringBuffer.append(" completed");
+        String subject = subjectStringBuffer.toString();
+
+        String itemName = order.getOrderItem().getName();
+        Integer orderItemQuantity = order.getOrderItemQuantity();
+        String text = String.format("Hi %s, \n Your order for %s unit for the item %s is now completed.", name, orderItemQuantity, itemName);
+        emailService.sendEmail(email, subject, text);
+
     }
 }
