@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
-    @Query("SELECT o FROM OrderEntity o where o.orderStatus=:orderStatus order by o.order_item_quantity, o.creationDate")
+    @Query("SELECT o FROM OrderEntity o where o.orderStatus=:orderStatus order by o.orderItemQuantity, o.creationDate")
     List<OrderEntity> findOrderByStatus(@Param("orderStatus") OrderStatus orderStatus);
 }

@@ -7,6 +7,7 @@ import com.carloscastor.ordermanager.exception.OMNotFoundException;
 import com.carloscastor.ordermanager.mapper.Mapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
 public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends BaseDTO, ID, REPO extends JpaRepository<ENT, ID>> {
 
     private REPO repository;
