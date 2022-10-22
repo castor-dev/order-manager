@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://database:5432/order-manager
-  mail:
-    host: mailhog
