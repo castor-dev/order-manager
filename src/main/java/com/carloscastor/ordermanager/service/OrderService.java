@@ -3,25 +3,25 @@ package com.carloscastor.ordermanager.service;
 import com.carloscastor.ordermanager.common.OrderStatus;
 import com.carloscastor.ordermanager.dto.ItemQuantityDTO;
 import com.carloscastor.ordermanager.dto.OrderDTO;
-import com.carloscastor.ordermanager.dto.StockMovementDTO;
 import com.carloscastor.ordermanager.entity.OrderEntity;
 import com.carloscastor.ordermanager.entity.StockMovementEntity;
 import com.carloscastor.ordermanager.entity.UserEntity;
 import com.carloscastor.ordermanager.mapper.Mapper;
 import com.carloscastor.ordermanager.repository.OrderRepository;
 import com.carloscastor.ordermanager.repository.StockMovementRepository;
-import org.aspectj.weaver.ast.Or;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService extends AbstractCRUDService<OrderEntity, OrderDTO, Integer, OrderRepository> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
     private EmailService emailService;
     private StockMovementRepository stockMovementRepository;
     private UserService userService;
@@ -59,6 +59,7 @@ public class OrderService extends AbstractCRUDService<OrderEntity, OrderDTO, Int
                 }
             }
             orderDTO.setStatus(OrderStatus.COMPLETED);
+            LOGGER.info(String.format("Order %s completed", orderDTO.getId()));
             OrderEntity orderEntity = getRepository().save(getMapper().fromDTOToEntity(orderDTO));
             sendOrderCompletionEmail(orderEntity);
             orderDTO = getMapper().fromEntityToDTO(orderEntity);

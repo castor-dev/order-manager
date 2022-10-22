@@ -37,7 +37,7 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
         return mapper.fromEntityToDTO(savedEntity);
     }
 
-    public DTO findByID(ID id){
+    public DTO findByID(ID id) {
         ENT entity = getEntity(id);
         return mapper.fromEntityToDTO(entity);
     }
@@ -45,8 +45,8 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
 
     public DTO update(ID id, DTO dto) {
         ENT entity = getEntity(id);
-        if(!id.equals(entity.getId())){
-            LOGGER.error(String.format("Source id (%s) different from Target id (s)", entity.getId(), id));
+        if (!id.equals(entity.getId())) {
+            LOGGER.error(String.format("[%s] Source id (%s) different from Target id (s)",this.getClass().getSimpleName(), entity.getId(), id));
             throw new OMInvalidOperationException("Entity ID can't be changed");
         }
         ENT ent = mapper.fromDTOToEntity(dto);
@@ -60,10 +60,11 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
 
     private ENT getEntity(ID id) {
         ENT entity = repository.findById(id).orElse(null);
-        if(Objects.isNull(entity)){
-            LOGGER.error(String.format("Entity with id %s not found", id));
+        if (Objects.isNull(entity)) {
+            LOGGER.error(String.format("[%s] Entity with id %s not found", this.getClass().getSimpleName(), id));
             throw new OMNotFoundException("Not Found");
         }
         return entity;
     }
+
 }
