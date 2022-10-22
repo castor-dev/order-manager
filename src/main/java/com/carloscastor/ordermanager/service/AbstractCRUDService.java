@@ -2,7 +2,7 @@ package com.carloscastor.ordermanager.service;
 
 import com.carloscastor.ordermanager.dto.BaseDTO;
 import com.carloscastor.ordermanager.entity.BaseEntity;
-import com.carloscastor.ordermanager.exception.OMInvalidOperationException;
+import com.carloscastor.ordermanager.exception.OMBadRequestException;
 import com.carloscastor.ordermanager.exception.OMNotFoundException;
 import com.carloscastor.ordermanager.mapper.Mapper;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
         ENT entity = getEntity(id);
         if (!id.equals(entity.getId())) {
             LOGGER.error(String.format("[%s] Source id (%s) different from Target id (s)",this.getClass().getSimpleName(), entity.getId(), id));
-            throw new OMInvalidOperationException("Entity ID can't be changed");
+            throw new OMBadRequestException("Entity ID can't be changed");
         }
         ENT ent = mapper.fromDTOToEntity(dto);
         return mapper.fromEntityToDTO(repository.save(ent));

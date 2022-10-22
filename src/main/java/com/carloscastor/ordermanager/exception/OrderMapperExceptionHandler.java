@@ -14,8 +14,8 @@ public class OrderMapperExceptionHandler {
         return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(OMInvalidOperationException.class)
-    public ResponseEntity invalidOperationException(OMInvalidOperationException exception){
+    @ExceptionHandler(OMBadRequestException.class)
+    public ResponseEntity invalidOperationException(OMBadRequestException exception){
         return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

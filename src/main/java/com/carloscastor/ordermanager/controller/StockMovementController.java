@@ -32,6 +32,11 @@ public class StockMovementController {
     public StockMovementDTO retrieveStockMovement(@PathVariable("stock-movement-id") Integer stockMovementId) {
         return stockMovementService.findByID(stockMovementId);
     }
+
+    @GetMapping
+    public List<StockMovementDTO> retrieveAllStockMovements(){
+        return  stockMovementService.findAll();
+    }
     @GetMapping("/{stock-movement-id}/orders")
     public List<OrderStockMovementDTO> retrieveOrderStockMovementsReport(@PathVariable("stock-movement-id") Integer stockMovementId) {
         return orderStockReportService.findBySockMovementId(stockMovementId);

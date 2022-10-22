@@ -7,6 +7,8 @@ info:
 servers:
   - url: 'http://localhost:8080'
     description: Localhost
+  - url: 'http://localhost:8085'
+    description: Docker
 paths:
   /users:
     post:
@@ -19,16 +21,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
         '400':
           description: Email alredy taken
       description: Create a new user. The user email must be unique.
@@ -47,12 +39,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/User'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
       description: Returns a list with all available users.
   '/users/{user_id}':
     parameters:
@@ -145,6 +134,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Item'
+              examples: {}
       description: Returns a list with all available items.
   '/items/{item_id}':
     parameters:
@@ -205,11 +195,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                stock_movement:
-                  $ref: '#/components/schemas/StockMovement'
+              $ref: '#/components/schemas/StockMovement'
     parameters: []
+    get:
+      summary: Get All Stock Movements
+      operationId: get-stock-movements
+      responses:
+        '200':
+          description: OK
+      description: Retrieve all available stock movements
   '/stock-movements/{stock_movement_id}':
     parameters:
       - schema:
@@ -226,10 +220,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  stock_movement:
-                    $ref: '#/components/schemas/StockMovement'
+                $ref: '#/components/schemas/StockMovement'
       operationId: get-stock-movement-stock_movement_id
     put:
       summary: Update Stock Movement
@@ -242,10 +233,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                stock_movement:
-                  $ref: '#/components/schemas/StockMovement'
+              $ref: '#/components/schemas/StockMovement'
     delete:
       summary: Delete Stock Movement
       operationId: delete-stock-movement-stock_movement_id
@@ -268,8 +256,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderStockMovemets'
-      operationId: get-stock-movement-stock_movement_id
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderStockMovemets'
+      operationId: get-stock-movement-orders_id
       description: Get Orders the consumed the Stock Movement
   /orders:
     post:
@@ -278,22 +268,26 @@ paths:
       responses:
         '201':
           description: Created
+        '400':
+          description: Missing user id
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                order:
-                  $ref: '#/components/schemas/Order'
-  /orders/status:
+              $ref: '#/components/schemas/Order'
     get:
-      summary: Get Orders Status
-      operationId: get-orders---copy
+      summary: Get All Orders
+      operationId: get-orders
       responses:
         '200':
           description: OK
-    parameters: []
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+      description: Retrieve all available orders
   '/orders/{order_id}':
     parameters:
       - schema:
@@ -354,28 +348,14 @@ paths:
                 $ref: '#/components/schemas/OrderStockMovemets'
         '404':
           description: Not Found
-        '':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OrderStockMovemets'
-      operationId: get-orders-order_id
-      description: Get Stocl Movements used to fulfill the order
+      operationId: get-order-stock-movements
+      description: Get Stock Movements used to fulfill the order
 components:
   schemas:
     User:
       title: User
       type: object
       description: ''
-      x-examples:
-        Alice Smith:
-          id: 142
-          firstName: Alice
-          lastName: Smith
-          email: alice.smith@gmail.com
-          dateOfBirth: '1997-10-31'
-          emailVerified: true
-          signUpDate: '2019-08-24'
       properties:
         id:
           type: integer
@@ -389,7 +369,6 @@ components:
           format: email
           example: user@mail.com
       required:
-        - id
         - name
         - email
     Order:
@@ -409,11 +388,12 @@ components:
             - PENDING
             - COMPLETED
         created_by:
-          type: string
-          format: uuid
+          type: integer
         creation_date:
           type: string
-          format: date
+          format: date-time
+      required:
+        - created_by
     ItemQuantity:
       title: ItemQuantity
       x-stoplight:
@@ -422,13 +402,12 @@ components:
       properties:
         itemId:
           type: integer
-          minimum: 1
-        itemQuantity:
+        quantity:
           type: integer
           minimum: 1
       required:
         - itemId
-        - itemQuantity
+        - quantity
     StockMovement:
       title: StockMovement
       x-stoplight:
@@ -442,7 +421,7 @@ components:
           $ref: '#/components/schemas/ItemQuantity'
         creationDate:
           type: string
-          format: date
+          format: date-time
       required:
         - item
     OrderStockMovemets:
@@ -453,11 +432,14 @@ components:
       properties:
         orderId:
           type: integer
-          minimum: 1
         stockMovementId:
           type: integer
-        stockConsumedQuantity:
+        stockConsumed:
           type: integer
+          minimum: 1
+        orderQuantity:
+          type: integer
+          minimum: 1
     Item:
       title: Item
       x-stoplight:
@@ -466,7 +448,6 @@ components:
       properties:
         id:
           type: integer
-          minimum: 1
         name:
           type: string
       required:

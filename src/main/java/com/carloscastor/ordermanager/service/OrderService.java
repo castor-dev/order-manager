@@ -4,9 +4,9 @@ import com.carloscastor.ordermanager.common.OrderStatus;
 import com.carloscastor.ordermanager.dto.ItemQuantityDTO;
 import com.carloscastor.ordermanager.dto.OrderDTO;
 import com.carloscastor.ordermanager.entity.*;
+import com.carloscastor.ordermanager.exception.OMBadRequestException;
 import com.carloscastor.ordermanager.mapper.Mapper;
 import com.carloscastor.ordermanager.repository.OrderRepository;
-import com.carloscastor.ordermanager.repository.OrderStockMovementRepository;
 import com.carloscastor.ordermanager.repository.StockMovementRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +37,9 @@ public class OrderService extends AbstractCRUDService<OrderEntity, OrderDTO, Int
 
     @Override
     public OrderDTO create(OrderDTO dto) {
+        if(Objects.isNull(dto.getCreatedBy())){
+            throw new OMBadRequestException("Missing user id");
+        }
         dto.setStatus(OrderStatus.PENDING);
         dto.setCreationDate(LocalDateTime.now());
         OrderDTO orderDTO = super.create(dto);

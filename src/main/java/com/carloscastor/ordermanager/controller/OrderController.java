@@ -32,6 +32,11 @@ public class OrderController {
         return orderService.findByID(orderId);
     }
 
+    @GetMapping
+    public List<OrderDTO> retrieveAllOrders(){
+        return orderService.findAll();
+    }
+
     @GetMapping("/{order-id}/stock-movements")
     public List<OrderStockMovementDTO> retrieveOrderStockMovementsReport(@PathVariable("order-id") Integer orderId) {
         return orderStockReportService.findByOrderId(orderId);

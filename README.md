@@ -16,3 +16,4 @@ docker-compose up -d
 - Once the application is started, it is available on `http://localhost:8085`
 - The API endpoints description are available on the file `./reference/order-manager-api`
   -  To run the applicaion, is it possible to import this file to a tool such as Postman
+  - The email server used is a MailHog container. The emails sent after the order completion are available on `http://localhost:8025`
