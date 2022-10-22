@@ -383,13 +383,13 @@ components:
           enum:
             - PENDING
             - COMPLETED
-        created_by:
+        createdBy:
           type: integer
-        creation_date:
+        creationDate:
           type: string
           format: date-time
       required:
-        - created_by
+        - createdBy
     ItemQuantity:
       title: ItemQuantity
       x-stoplight:

@@ -34,6 +34,7 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
     }
 
     public DTO create(DTO dto) {
+        dto.setId(null);
         ENT entity = mapper.fromDTOToEntity(dto);
         ENT savedEntity = repository.save(entity);
         return mapper.fromEntityToDTO(savedEntity);
