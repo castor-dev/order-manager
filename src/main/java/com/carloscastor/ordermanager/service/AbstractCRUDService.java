@@ -5,11 +5,16 @@ import com.carloscastor.ordermanager.entity.BaseEntity;
 import com.carloscastor.ordermanager.exception.OMInvalidOperationException;
 import com.carloscastor.ordermanager.exception.OMNotFoundException;
 import com.carloscastor.ordermanager.mapper.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Objects;
 
 
 public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends BaseDTO, ID, REPO extends JpaRepository<ENT, ID>> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCRUDService.class);
     private REPO repository;
     private Mapper<DTO, ENT> mapper;
 
@@ -33,14 +38,15 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
     }
 
     public DTO findByID(ID id){
-        ENT entity = repository.findById(id).orElseThrow(() -> new OMNotFoundException("Not Found"));
+        ENT entity = getEntity(id);
         return mapper.fromEntityToDTO(entity);
     }
 
 
     public DTO update(ID id, DTO dto) {
-        ENT entity = repository.findById(id).orElseThrow(() -> new OMNotFoundException("Not Found"));
+        ENT entity = getEntity(id);
         if(!id.equals(entity.getId())){
+            LOGGER.error(String.format("Source id (%s) different from Target id (s)", entity.getId(), id));
             throw new OMInvalidOperationException("Entity ID can't be changed");
         }
         ENT ent = mapper.fromDTOToEntity(dto);
@@ -48,8 +54,16 @@ public abstract class AbstractCRUDService<ENT extends BaseEntity, DTO extends Ba
     }
 
     public void delete(ID id) {
-        ENT entity = repository.findById(id).orElseThrow(() -> new OMNotFoundException("Not Found"));
+        ENT entity = getEntity(id);
         repository.delete(entity);
     }
 
+    private ENT getEntity(ID id) {
+        ENT entity = repository.findById(id).orElse(null);
+        if(Objects.isNull(entity)){
+            LOGGER.error(String.format("Entity with id %s not found", id));
+            throw new OMNotFoundException("Not Found");
+        }
+        return entity;
+    }
 }
